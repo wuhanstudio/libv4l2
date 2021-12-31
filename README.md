@@ -1,5 +1,7 @@
 ## libv4l2 loopback
 
+For v4l2loopback devices:
+
 ```
 $ make
 $ ./main -f 0 -r 1 -v /dev/video0
