@@ -23,8 +23,8 @@ static void usage(const char *argv0)
             "1 = USER_PTR\n");
     fprintf(stderr,
             " -r <resolution> Select frame resolution:\n\t"
-            "0 = HEIGHT1p, VGA (WIDTH1xHEIGHT1)\n\t"
-            "1 = 720p, (WIDTH2xHEIGHT2)\n");
+            "0 = 360p, VGA\n\t"
+            "1 = 720p, \n");
     fprintf(stderr, " -v device	V4L2 Video Capture device\n");
 }
 
@@ -168,17 +168,15 @@ int main(int argc, char *argv[])
 
         cv::Mat out_img;
 
-        // if (default_format == 0) {
+        if (default_format == 0) {
             // Decode YUYV
-            cv::Mat img = cv::Mat(cv::Size((default_resolution == 0) ? WIDTH1 : WIDTH2, (default_resolution == 0) ? HEIGHT1 : HEIGHT2), CV_8UC2, vdev->mem[1].start);
+            cv::Mat img = cv::Mat(cv::Size((default_resolution == 0) ? WIDTH1 : WIDTH2, (default_resolution == 0) ? HEIGHT1 : HEIGHT2), CV_8UC2, vdev->mem[0].start);
             cv::cvtColor(img, out_img, cv::COLOR_YUV2RGB_YVYU);
-        // }
-        // else {
-            // Decode MJPEG (OpenCV4 Only)
-            // unsigned int a_size = (default_resolution == 0) ? (WIDTH1*HEIGHT1*3) : (WIDTH2*HEIGHT2*3);
-            // cv::_InputArray pic_arr(buffer, a_size);
-            // out_img = cv::imdecode(pic_arr, cv::IMREAD_UNCHANGED);
-        // }
+        }
+        else {
+	    cv::_InputArray pic_arr((uint8_t*)vdev->mem[0].start, (default_resolution == 0) ? (WIDTH1*HEIGHT1*3) : (WIDTH2*HEIGHT2*3));
+            out_img = cv::imdecode(pic_arr, cv::IMREAD_UNCHANGED);
+        }
 
         // imwrite("output.jpg", out_img);
 

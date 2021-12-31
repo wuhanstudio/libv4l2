@@ -2,18 +2,18 @@ CROSS_COMPILE	?=
 ARCH		?= x86
 KERNEL_DIR	?= /usr/src/linux
 
-CXX			:= $(CROSS_COMPILE)g++
-CFLAGS		:= -W -Wall -fpermissive
+CXX		:= $(CROSS_COMPILE)g++
+CFLAGS		:= -I /usr/include/opencv4 -W -Wall -fpermissive
 LDFLAGS		:= -g
 
-all: uvc-gadget
+all: main
 
-uvc-gadget.o: uvc-gadget.cpp
+main.o: main.cpp
 	$(CXX) -c $(CFLAGS) $^
 
-uvc-gadget: uvc-gadget.o
-	$(CXX) $(LDFLAGS) -o $@ $^ `pkg-config --libs opencv`
+main: main.o
+	$(CXX) $(LDFLAGS) -o $@ $^ `pkg-config --libs opencv4`
 
 clean:
 	rm -f *.o
-	rm -f uvc-gadget
+	rm -f main
